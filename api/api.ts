@@ -9,17 +9,18 @@ const apiClient = axios.create({
   },
 });
 
-// Fungsi untuk mendapatkan data anggota
-export async function getData(): Promise<MemberData[]> {
-  try {
-    const response = await apiClient.get("/anggota");
-    // console.log("API Response:", response.data.data);
-    return response.data.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
-}
+// api.ts
+export const getData = async (page: number = 1, pageSize: number = 10) => {
+  const response = await apiClient.get(`/anggota?page=${page}&per_page=${pageSize}`);
+  const data = await response.data;
+  return {
+    data: data.data,
+    total: data.total,
+    currentPage: data.current_page,
+    lastPage: data.last_page,
+  };
+};
+
 
 // Fungsi untuk menambahkan data anggota baru
 export async function addMember(member: MemberData): Promise<MemberData> {

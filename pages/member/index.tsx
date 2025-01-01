@@ -28,19 +28,24 @@ export default function Member() {
   });
   const [validationError, setValidationError] = useState<Record<string, string | null>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [pageIndex, setPageIndex] = useState(0); // Halaman dimulai dari 0
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRows, setTotalRows] = useState(0); // Total data dari server
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [pageIndex, pageSize]); // Fetch data setiap kali pagination berubah
 
   const fetchData = async () => {
-    const result = await getData();
+    const result = await getData(pageIndex + 1, pageSize); // PageIndex dikirim dalam format 1-based
+    // console.log("fetchData", result);
     // Ubah tanggal menjadi objek Date
-    const processedData = result.map((item: any) => ({
+    const processedData = result.data.map((item: any) => ({
         ...item,
         tanggal_daftar: new Date(item.tanggal_daftar),
       }));
     setData(processedData);
+    setTotalRows(result.total); // Total baris diambil dari API
   };
 
   const openAddDialog = () => {
@@ -159,7 +164,16 @@ export default function Member() {
         </div>
 
         {/* DataTable */}
-        <DataTable columns={columns(openEditDialog, confirmDelete )} data={data} />
+        <DataTable
+          columns={columns(openEditDialog, confirmDelete)}
+          data={data}
+          pageCount={Math.ceil(totalRows / pageSize)} // Total halaman
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          onPageChange={(newPageIndex) => setPageIndex(newPageIndex)}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          isLoading={isLoading}
+        />
 
         {/* MemberDialog */}
         <MemberDialog
