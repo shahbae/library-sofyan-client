@@ -1,6 +1,6 @@
-import { SidebarLayout } from "../../components/fragments/sidebar";
-import { columns, MemberData } from "../../components/fragments/data_columns";
-import { DataTable } from "../../components/fragments/data_table";
+import { SidebarLayout } from "../../components/sidebar";
+import { columns, MemberData } from "../../components/member/data_columns";
+import { DataTable } from "../../components/member/data_table";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";

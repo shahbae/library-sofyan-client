@@ -1,4 +1,4 @@
-import { SidebarLayout } from "../components/fragments/sidebar";
+import { SidebarLayout } from "../components/sidebar";
 
 export default function Dashboard() {
   return (

@@ -51,8 +51,8 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
           <div>
             <SidebarLink
               link={{
-                label: "Manu Arora",
-                href: "#",
+                label: "Nur Shah Alam",
+                href: "nurshahalam.site",
                 icon: (
                   <Image
                     src="https://assets.aceternity.com/manu.png"
