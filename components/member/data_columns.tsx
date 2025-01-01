@@ -6,16 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MdDelete } from "react-icons/md";
-
-export type MemberData = {
-  id: string;
-  nama: string;
-  email: string;
-  no_hp: string;
-  alamat: string;
-  tanggal_daftar: Date;
-  status_anggota: "active" | "inactive";
-};
+import { MemberData } from "@/data/type";
 
 export const columns = (openEditDialog: (member: MemberData) => void,  confirmDelete: (id: string) => void ): ColumnDef<MemberData>[] => [
   {

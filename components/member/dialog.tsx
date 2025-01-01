@@ -13,8 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { MemberData } from "./data_columns";
 import { Switch } from "../ui/switch";
+import { MemberData } from "@/data/type";
 
 export type MemberDialogProps = {
   isOpen: boolean;

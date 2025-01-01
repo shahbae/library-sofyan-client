@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { SidebarLayout } from "@/components/sidebar";
-import { MemberData, columns } from "@/components/member/data_columns";
+import { columns } from "@/components/member/data_columns";
 import { DataTable } from "@/components/member/data_table";
 import { MemberDialog } from "@/components/member/dialog";
-import { addMember, deleteMember, getData, updateMember } from "@/lib/api";
+import { addMember, deleteMember, getData, updateMember } from "@/api/api";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { toast, useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/hooks/use-toast"
+import { MemberData } from "@/data/type";
 
 export default function Member() {
   const { toast } = useToast()
@@ -145,7 +145,6 @@ export default function Member() {
     }
   };
   
-
   return (
     <SidebarLayout>
       <div className="flex flex-col gap-4">

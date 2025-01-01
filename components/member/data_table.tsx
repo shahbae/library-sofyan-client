@@ -39,6 +39,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  
 }: DataTableProps<TData, TValue>) {
   const tableData = React.useMemo(() => data, [data]); 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -67,8 +68,6 @@ export function DataTable<TData, TValue>({
   React.useEffect(() => {
     table.setPageIndex(0); // Reset pagination saat data berubah
   }, [data]);
-
-  console.log("Table rows:", table.getRowModel().rows);
 
   return (
     <div className="h-full">

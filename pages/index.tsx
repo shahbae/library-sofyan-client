@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SidebarLayout } from "../components/sidebar";
-import { getDashboardData } from "@/lib/api";
+import { getDashboardData } from "@/api/api";
 
 export default function Dashboard() {
   const [data, setData] = useState({ total_anggota: 0, total_anggota_aktif: 0 });

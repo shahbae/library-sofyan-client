@@ -1,4 +1,4 @@
-import { MemberData } from "@/components/member/data_columns";
+import { MemberData } from "@/data/type";
 import axios from "axios";
 
 // Membuat instance Axios dengan konfigurasi dasar
@@ -24,7 +24,7 @@ export async function getData(): Promise<MemberData[]> {
 // Fungsi untuk menambahkan data anggota baru
 export async function addMember(member: MemberData): Promise<MemberData> {
     try {
-      console.log("data param", member);
+      // console.log("data param", member);
       const response = await apiClient.post("/anggota", member);
       return response.data;
     } catch (error) {
