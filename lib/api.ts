@@ -12,7 +12,7 @@ const apiClient = axios.create({
 // Fungsi untuk mendapatkan data anggota
 export async function getData(): Promise<MemberData[]> {
   try {
-    const response = await apiClient.get("/anggota"); // Endpoint untuk mendapatkan data anggota
+    const response = await apiClient.get("/anggota");
     // console.log("API Response:", response.data.data);
     return response.data.data;
   } catch (error) {

@@ -21,7 +21,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
       ),
     },
     {
-      label: "Members",
+      label: "Anggota",
       href: "/member",
       icon: (
         <FaUsers className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
@@ -48,7 +48,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
                 href: "nurshahalam.site",
                 icon: (
                   <Image
-                    src="https://assets.aceternity.com/manu.png"
+                    src="https://res.cloudinary.com/dnlw7tmt7/image/upload/v1733040077/shahbased/iacyb32ismr3aw9op2q2.png"
                     className="h-7 w-7 flex-shrink-0 rounded-full"
                     width={50}
                     height={50}

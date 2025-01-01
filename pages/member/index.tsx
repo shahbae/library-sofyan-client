@@ -6,8 +6,11 @@ import { MemberDialog } from "@/components/member/dialog";
 import { addMember, deleteMember, getData, updateMember } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { toast, useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 export default function Member() {
+  const { toast } = useToast()
   const [data, setData] = useState<MemberData[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
@@ -35,7 +38,7 @@ export default function Member() {
     // Ubah tanggal menjadi objek Date
     const processedData = result.map((item: any) => ({
         ...item,
-        tanggal_daftar: new Date(item.tanggal_daftar), // Pastikan ini diubah menjadi objek Date
+        tanggal_daftar: new Date(item.tanggal_daftar),
       }));
     setData(processedData);
   };
@@ -82,14 +85,24 @@ export default function Member() {
 
     try {
       if (dialogMode === "add") {
+          toast({
+              title: "Anggota berhasil ditambahkan",
+              description: "Anggota berhasil ditambahkan ke database.",
+              className: "bg-blue-500",
+            })
         await addMember(memberData);
       } else if (dialogMode === "edit" && editingMember) {
+        toast({
+            title: "Anggota berhasil diupdate",
+            description: "Anggota berhasil diupdate di database.",
+            className: "bg-blue-500",
+          })
         await updateMember(memberData.id, memberData);
       }
       fetchData();
       setIsDialogOpen(false);
     } catch (error: any) {
-        // Tangkap error validasi dari Laravel
+        // Tangkap error validasi dari Backend
         if (error?.data?.errors) {
           const backendErrors = error.data.errors;
     
@@ -97,7 +110,7 @@ export default function Member() {
           if (backendErrors.email) {
             setValidationError((prev) => ({
               ...prev,
-              email: backendErrors.email[0], // Tampilkan pesan error email
+              email: backendErrors.email[0],
             }));
           }
         } else {
@@ -116,8 +129,13 @@ export default function Member() {
   const handleDelete = async (id: string) => {
     setIsLoading(true);
     try {
+        toast({
+            title: "Anggota berhasil dihapus",
+            description: "Anggota berhasil dihapus dari database.",
+            className: "bg-red-500",
+        })
       await deleteMember(id);
-      fetchData(); // Perbarui data setelah penghapusan
+      fetchData();
       setIsDeleteDialogOpen(false);
       setSelectedMemberId(null);
     } catch (error) {
@@ -131,6 +149,7 @@ export default function Member() {
   return (
     <SidebarLayout>
       <div className="flex flex-col gap-4">
+
         {/* Tombol Tambah Anggota */}
         <div className="flex flex-row justify-between">
             <div className="flex flex-col gap-2">

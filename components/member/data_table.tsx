@@ -40,7 +40,6 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  console.log("Data received in DataTable:", data);
   const tableData = React.useMemo(() => data, [data]); 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -68,7 +67,7 @@ export function DataTable<TData, TValue>({
   React.useEffect(() => {
     table.setPageIndex(0); // Reset pagination saat data berubah
   }, [data]);
-  
+
   console.log("Table rows:", table.getRowModel().rows);
 
   return (
