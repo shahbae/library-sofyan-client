@@ -32,7 +32,12 @@ export default function Member() {
 
   const fetchData = async () => {
     const result = await getData();
-    setData(result);
+    // Ubah tanggal menjadi objek Date
+    const processedData = result.map((item: any) => ({
+        ...item,
+        tanggal_daftar: new Date(item.tanggal_daftar), // Pastikan ini diubah menjadi objek Date
+      }));
+    setData(processedData);
   };
 
   const openAddDialog = () => {
@@ -109,10 +114,7 @@ export default function Member() {
   };
   
   const handleDelete = async (id: string) => {
-   
-  
     setIsLoading(true);
-  
     try {
       await deleteMember(id);
       fetchData(); // Perbarui data setelah penghapusan

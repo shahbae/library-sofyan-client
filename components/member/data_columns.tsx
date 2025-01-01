@@ -45,10 +45,10 @@ export const columns = (openEditDialog: (member: MemberData) => void,  confirmDe
   {
     accessorKey: "tanggal_daftar",
     header: "Tanggal Daftar",
-    // cell: ({ row }) => {
-    //   const date = row.original.tanggal_daftar;
-    //   return <div>{date.toLocaleDateString()}</div>;
-    // },
+    cell: ({ row }) => {
+      const date = row.original.tanggal_daftar;
+      return <div>{date.toLocaleDateString()}</div>;
+    },
   },
   {
     accessorKey: "status_anggota",

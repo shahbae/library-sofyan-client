@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Membuat instance Axios dengan konfigurasi dasar
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -41,7 +41,8 @@ export async function addMember(member: MemberData): Promise<MemberData> {
     }
   }
 
-  export async function updateMember(id: string, updatedData: MemberData): Promise<MemberData> {
+// Fungsi untuk mengupdate data anggota
+export async function updateMember(id: string, updatedData: MemberData): Promise<MemberData> {
     try {
       const response = await apiClient.put(`/anggota/${id}`, updatedData);
       return response.data;
