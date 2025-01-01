@@ -1,119 +1,122 @@
 import { SidebarLayout } from "../../components/sidebar";
 import { columns, MemberData } from "../../components/member/data_columns";
 import { DataTable } from "../../components/member/data_table";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { addMember, getData } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
-async function getData(): Promise<MemberData[]> {
-    // Fetch data from your API here.
-    return [
-        {
-            "id": "0bbf7b25-9676-42cc-9ceb-131c973bb90a",
-            "nama": "Clemens Funk",
-            "email": "dillan40@example.net",
-            "no_hp": "678-402-2347",
-            "alamat": "687 Schumm Fort\nRoweberg, IL 14087",
-            "tanggal_daftar": new Date("1978-07-27"),
-            "status_anggota": "inactive"
-        },
-        {
-            "id": "2388414f-1cd6-417d-9671-178ffc7960aa",
-            "nama": "Mandy Ferry",
-            "email": "schulist.berta@example.org",
-            "no_hp": "530-960-8932",
-            "alamat": "17341 Lang Mission Apt. 220\nVivianefort, MI 10300-2803",
-            "tanggal_daftar": new Date("1987-03-25"),
-            "status_anggota": "inactive"
-        },
-        {
-            "id": "25aa18e3-4e10-451b-8f23-6b1fbfaf9730",
-            "nama": "Miss Zoie Hickle Jr.",
-            "email": "kenna.cremin@example.org",
-            "no_hp": "+1-318-447-9955",
-            "alamat": "45756 Frieda Pine Suite 697\nMuellerside, WY 68956",
-            "tanggal_daftar": new Date("1977-02-12"),
-            "status_anggota": "active"
-        },
-        {
-            "id": "546eba11-11cd-4f9c-b166-4553b1c24bf0",
-            "nama": "Ms. Imogene Aufderhar",
-            "email": "gino59@example.com",
-            "no_hp": "845.743.1620",
-            "alamat": "992 Zula Hills Suite 786\nAiyanaton, MT 34083",
-            "tanggal_daftar": new Date("2010-03-03"),
-            "status_anggota": "inactive"
-        },
-        {
-            "id": "59adc1c6-ccc3-4f55-bfd4-cd3e28876512",
-            "nama": "Elaina Kilback I",
-            "email": "maryse.stoltenberg@example.com",
-            "no_hp": "832.804.0856",
-            "alamat": "124 Gusikowski Knolls Apt. 193\nSethmouth, TN 95770-3206",
-            "tanggal_daftar": new Date("1997-10-03"),
-            "status_anggota": "inactive"
-        },
-        {
-            "id": "74ac2761-0666-4999-84f3-09db22cf1a35",
-            "nama": "Jewell Kessler",
-            "email": "cummerata.nicklaus@example.net",
-            "no_hp": "(820) 472-0647",
-            "alamat": "2397 Grady Streets\nSchmelerport, MO 91637-8266",
-            "tanggal_daftar": new Date("2021-02-11"),
-            "status_anggota": "active"
-        },
-        {
-            "id": "76178d3f-e356-43ec-b3e4-81b359b3742d",
-            "nama": "Mrs. Concepcion Schmidt V",
-            "email": "maymie.johns@example.com",
-            "no_hp": "+1.904.906.3256",
-            "alamat": "71977 Laron Wall Apt. 882\nPort Ariane, CO 11200",
-            "tanggal_daftar": new Date("2019-03-21"),
-            "status_anggota": "active"
-        },
-        {
-            "id": "7f04e38c-10df-44ce-84a6-145f7a4ee9cf",
-            "nama": "Jerrell Gutmann MD",
-            "email": "omurazik@example.com",
-            "no_hp": "+15628793160",
-            "alamat": "687 Miller Expressway Apt. 164\nNorth Nelda, TX 29929",
-            "tanggal_daftar": new Date("2015-05-19"),
-            "status_anggota": "inactive"
-        },
-        {
-            "id": "bcb9c511-f77e-465a-a272-6930be547bf0",
-            "nama": "Carolanne Reichert",
-            "email": "abshire.jazlyn@example.com",
-            "no_hp": "+1-859-212-9287",
-            "alamat": "2136 Raegan Lodge\nSouth Peggietown, NJ 97746-2327",
-            "tanggal_daftar": new Date("1995-05-27"),
-            "status_anggota": "inactive"
-        },
-        {
-            "id": "ccbad89a-b934-477f-ae24-287a2ad80ef0",
-            "nama": "Terrence Pagac",
-            "email": "adam80@example.net",
-            "no_hp": "1-540-556-8504",
-            "alamat": "56857 Zieme Station Suite 155\nFramiton, OH 50499",
-            "tanggal_daftar": new Date("1991-10-29"),
-            "status_anggota": "inactive"
-        }
-    ]
-  }
+
 
 export default function Member() {
     const [data, setData] = useState<MemberData[]>([]);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [validationError, setValidationError] = React.useState<Record<string, string | null>>({});
 
-    useEffect(() => {
+
+    const [newMember, setNewMember] = useState<MemberData>({
+        id: "", // ID akan dihasilkan di backend atau dengan library UUID
+        nama: "",
+        email: "",
+        no_hp: "",
+        alamat: "",
+        tanggal_daftar: new Date(),
+        status_anggota: "active",
+      });
+    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        setNewMember((prev) => ({
+        ...prev,
+        [id]: id === "tanggal_daftar" ? new Date(value) : value,
+        }));
+        setValidationError((prev) => ({ ...prev, email: null }));
+        setValidationError((prev) => ({ ...prev, nama: null }));
+        setValidationError((prev) => ({ ...prev, no_hp: null }));
+        setValidationError((prev) => ({ ...prev, alamat: null }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        // Validasi: pastikan semua field diisi
+        if (!newMember.nama || !newMember.email || !newMember.no_hp || !newMember.alamat) {
+            setValidationError((prev) => ({
+            ...prev,
+            nama: !newMember.nama ? "Nama wajib diisi." : null,
+            email: !newMember.email ? "Email wajib diisi." : null,
+            no_hp: !newMember.no_hp ? "Nomor HP wajib diisi." : null,
+            alamat: !newMember.alamat ? "Alamat wajib diisi." : null,
+            }));
+            setIsLoading(false);
+            return; // Hentikan proses jika ada field kosong
+        }
+      
+        try {
+          // Kirim data ke backend
+          const savedMember = await addMember(newMember);
+      
+          if (savedMember) {
+            console.log("Member added successfully:", savedMember);
+            fetchData(); // Ambil ulang data dari API
+          }
+      
+          setSuccessMessage("Anggota berhasil ditambahkan!");
+          setNewMember({
+            id: "",
+            nama: "",
+            email: "",
+            no_hp: "",
+            alamat: "",
+            tanggal_daftar: new Date(),
+            status_anggota: "active",
+          });
+          setIsDialogOpen(false); // Tutup dialog
+          
+        } catch (error: any) {
+            // Tangkap error validasi dari Laravel
+            if (error?.data?.errors) {
+              const backendErrors = error.data.errors;
+        
+              // Tangani error email unik
+              if (backendErrors.email) {
+                setValidationError((prev) => ({
+                  ...prev,
+                  email: backendErrors.email[0], // Tampilkan pesan error email
+                }));
+              }
+            } else {
+              console.error("Unexpected error:", error);
+            }
+          } finally {
+            setIsLoading(false);
+          }
+      };
+
         async function fetchData() {
             const result = await getData();
-            setData(result);
+            // console.log("Data fetched:", result);
+            // Proses data sebelum diteruskan ke DataTable
+            const processedData = result.map((item) => ({
+                ...item,
+                tanggal_daftar: new Date(item.tanggal_daftar), // Ubah tanggal menjadi objek Date
+            }));
+            // console.log("Processed Data:", processedData);
+            setData(processedData);
         }
+
+    useEffect(() => {
         fetchData();
     }, []);
+    // console.log("DataTable data:", data);
   return (
     <div>
         <SidebarLayout>
@@ -123,9 +126,9 @@ export default function Member() {
                     <h1 className="text-xl font-sans font-bold">Manajemen Anggota Library Sofyan Corp</h1>
                     <p>Berikut adalah daftar anggota yang terdaftar di perpustakaan.</p>
                 </div>
-                <Dialog>
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button>Tambah Anggota</Button>
+                        <Button onClick={() => setIsDialogOpen(true)}>Tambah Anggota</Button>
                     </DialogTrigger>
                     <DialogContent className="mx-5 max-w-[300px] md:max-w-xl">
                         <DialogHeader>
@@ -134,33 +137,44 @@ export default function Member() {
                             Silahkan isi datanya.
                         </DialogDescription>
                         </DialogHeader>
+                        <form onSubmit={handleSubmit}>
                         <div className="grid gap-4 py-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="nama" className="text-left">
                                 Nama
                                 </Label>
                                 <Input
+                                value={newMember.nama} 
+                                onChange={handleChange}
                                 id="nama"
                                 className="col-span-3"
                                 />
+                                {validationError.nama && <p className="font-sans font-semibold text-sm p-1 rounded-full bg-red-500/10 text-red-500 col-span-4 text-center">{validationError.nama}</p>}
+
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="email" className="text-left">
                                 Email
                                 </Label>
                                 <Input
+                                value={newMember.email} 
+                                onChange={handleChange}
                                 id="email"
                                 className="col-span-3"
                                 />
+                                {validationError.email && <p className="font-sans font-semibold text-sm p-1 rounded-full bg-red-500/10 text-red-500 col-span-4 text-center">{validationError.email}</p>}
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="no_hp" className="text-left">
                                 Nomer HP
                                 </Label>
                                 <Input
+                                value={newMember.no_hp} 
+                                onChange={handleChange}
                                 id="no_hp"
                                 className="col-span-3"
                                 />
+                                {validationError.no_hp && <p className="font-sans font-semibold text-sm p-1 rounded-full bg-red-500/10 text-red-500 col-span-4 text-center">{validationError.no_hp}</p>}
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="alamat" className="text-left">
@@ -168,13 +182,19 @@ export default function Member() {
                                 </Label>
                                 <Textarea
                                 id="alamat"
+                                value={newMember.alamat} 
+                                onChange={handleChange}
                                 className="col-span-3"
                                 />
+                                {validationError.alamat && <p className="font-sans font-semibold text-sm p-1 rounded-full bg-red-500/10 text-red-500 col-span-4 text-center">{validationError.alamat}</p>}
                             </div>
                         </div>
                         <DialogFooter>
-                        <Button type="submit">Simpan</Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? "Menyimpan..." : "Simpan"}
+                        </Button>
                         </DialogFooter>
+                        </form>
                     </DialogContent>
                 </Dialog>
             </div>
@@ -184,3 +204,4 @@ export default function Member() {
     </div>
   );
 }
+

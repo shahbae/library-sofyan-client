@@ -58,7 +58,7 @@ export const columns: ColumnDef<MemberData>[] = [
       },
   },
   {
-    accessorKey: "status",
+    accessorKey: "status_anggota",
     header: "Status",
     cell: ({ row }) => {
         const status = row.original.status_anggota
