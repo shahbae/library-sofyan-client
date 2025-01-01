@@ -65,3 +65,15 @@ export async function deleteMember(id: string): Promise<boolean> {
     return false;
   }
 }
+
+// Fungsi untuk mendapatkan data dashboard
+export async function getDashboardData(): Promise<{ total_anggota: number; total_anggota_aktif: number }> {
+  try {
+    const response = await apiClient.get("/dashboard");
+    // console.log("response", response.data.data);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    return { total_anggota: 0, total_anggota_aktif: 0 };
+  }
+}

@@ -3,12 +3,15 @@ import { SidebarLayout } from "@/components/sidebar";
 import { MemberData, columns } from "@/components/member/data_columns";
 import { DataTable } from "@/components/member/data_table";
 import { MemberDialog } from "@/components/member/dialog";
-import { addMember, getData, updateMember } from "@/lib/api";
+import { addMember, deleteMember, getData, updateMember } from "@/lib/api";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 export default function Member() {
   const [data, setData] = useState<MemberData[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"add" | "edit">("add");
   const [editingMember, setEditingMember] = useState<MemberData | null>(null);
   const [newMember, setNewMember] = useState<MemberData>({
@@ -100,6 +103,29 @@ export default function Member() {
     }
   };
 
+  const confirmDelete = (id: string) => {
+    setSelectedMemberId(id);
+    setIsDeleteDialogOpen(true);
+  };
+  
+  const handleDelete = async (id: string) => {
+   
+  
+    setIsLoading(true);
+  
+    try {
+      await deleteMember(id);
+      fetchData(); // Perbarui data setelah penghapusan
+      setIsDeleteDialogOpen(false);
+      setSelectedMemberId(null);
+    } catch (error) {
+      console.error("Gagal menghapus anggota:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+
   return (
     <SidebarLayout>
       <div className="flex flex-col gap-4">
@@ -113,7 +139,7 @@ export default function Member() {
         </div>
 
         {/* DataTable */}
-        <DataTable columns={columns(openEditDialog)} data={data} />
+        <DataTable columns={columns(openEditDialog, confirmDelete )} data={data} />
 
         {/* MemberDialog */}
         <MemberDialog
@@ -150,6 +176,26 @@ export default function Member() {
           validationError={validationError}
           isLoading={isLoading}
         />
+        
+        {/* Delete Dialog */}
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <DialogContent >
+                <DialogHeader>
+                <DialogTitle >Konfirmasi Hapus</DialogTitle>
+                <DialogDescription>
+                    Apakah Anda yakin ingin menghapus anggota ini? <br/> Tindakan ini tidak dapat dibatalkan.
+                </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                <Button variant="secondary" onClick={() => setIsDeleteDialogOpen(false)}>
+                    Batal
+                </Button>
+                <Button variant="destructive" onClick={() => handleDelete(selectedMemberId!)}>
+                    Hapus Anggota
+                </Button>
+                </DialogFooter>
+            </DialogContent>
+            </Dialog>
       </div>
     </SidebarLayout>
   );

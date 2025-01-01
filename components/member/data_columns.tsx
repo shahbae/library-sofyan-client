@@ -17,7 +17,7 @@ export type MemberData = {
   status_anggota: "active" | "inactive";
 };
 
-export const columns = (openEditDialog: (member: MemberData) => void): ColumnDef<MemberData>[] => [
+export const columns = (openEditDialog: (member: MemberData) => void,  confirmDelete: (id: string) => void ): ColumnDef<MemberData>[] => [
   {
     accessorKey: "nama",
     header: ({ column }) => (
@@ -75,7 +75,10 @@ export const columns = (openEditDialog: (member: MemberData) => void): ColumnDef
           >
             <EditIcon className="h-4 w-4 text-indigo-400" />
           </Button>
-          <Button variant="ghost">
+          <Button 
+            variant="ghost"
+            onClick={() => confirmDelete(member.id)}
+          >
             <MdDelete className="h-4 w-4 text-red-400" />
           </Button>
         </div>

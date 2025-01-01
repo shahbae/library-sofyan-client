@@ -142,8 +142,8 @@ export function MemberDialog({
               {isLoading
                 ? "Menyimpan..."
                 : mode === "add"
-                ? "Tambah"
-                : "Simpan"}
+                ? "Tambah Anggota"
+                : "Simpan Edit"}
             </Button>
           </DialogFooter>
         </form>
