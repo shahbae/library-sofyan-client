@@ -93,6 +93,7 @@ export const columns: ColumnDef<MemberData>[] = [
                                 </Label>
                                 <Input
                                 id="nama"
+                                value={member.nama}
                                 className="col-span-3"
                                 />
                             </div>
@@ -102,6 +103,7 @@ export const columns: ColumnDef<MemberData>[] = [
                                 </Label>
                                 <Input
                                 id="email"
+                                value={member.email}
                                 className="col-span-3"
                                 />
                             </div>
@@ -111,6 +113,7 @@ export const columns: ColumnDef<MemberData>[] = [
                                 </Label>
                                 <Input
                                 id="no_hp"
+                                value={member.no_hp}
                                 className="col-span-3"
                                 />
                             </div>
@@ -120,6 +123,7 @@ export const columns: ColumnDef<MemberData>[] = [
                                 </Label>
                                 <Textarea
                                 id="alamat"
+                                value={member.alamat}
                                 className="col-span-3"
                                 />
                             </div>
@@ -127,7 +131,10 @@ export const columns: ColumnDef<MemberData>[] = [
                                 <Label htmlFor="status" className="text-left">
                                 Status
                                 </Label>
-                                <Switch id="status" />
+                                <Switch 
+                                id="status" 
+                                checked={member.status_anggota === 'active'}
+                                />
                             </div>
                         </div>
                         <DialogFooter>

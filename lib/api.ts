@@ -41,16 +41,19 @@ export async function addMember(member: MemberData): Promise<MemberData> {
     }
   }
 
-// Fungsi untuk memperbarui data anggota
-export async function updateMember(id: string, member: Partial<MemberData>): Promise<MemberData | null> {
-  try {
-    const response = await apiClient.put(`/anggota/${id}`, member);
-    return response.data;
-  } catch (error) {
-    console.error("Error updating member:", error);
-    return null;
+  export async function updateMember(id: string, updatedData: MemberData): Promise<MemberData> {
+    try {
+      const response = await apiClient.put(`/anggota/${id}`, updatedData);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Error response from server:", error.response.data);
+        throw error.response;
+      }
+      throw new Error("Unexpected error occurred while updating member.");
+    }
   }
-}
+  
 
 // Fungsi untuk menghapus data anggota
 export async function deleteMember(id: string): Promise<boolean> {
