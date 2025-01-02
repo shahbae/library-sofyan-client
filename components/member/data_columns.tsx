@@ -20,6 +20,10 @@ export const columns = (openEditDialog: (member: MemberData) => void,  confirmDe
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => {
+      const nama = row.original.nama;
+      return <div className="max-w-44 truncate">{nama}</div>;
+    },
   },
   {
     accessorKey: "email",
@@ -32,6 +36,10 @@ export const columns = (openEditDialog: (member: MemberData) => void,  confirmDe
   {
     accessorKey: "alamat",
     header: "Alamat",
+    cell: ({ row }) => {
+      const alamat = row.original.alamat;
+      return <div className="max-w-xs truncate">{alamat}</div>;
+    }
   },
   {
     accessorKey: "tanggal_daftar",
