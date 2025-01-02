@@ -51,13 +51,27 @@ export function DataTable<TData, TValue>({
   onPageSizeChange,
   isLoading,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [columnVisibility, setColumnVisibility] =
+  React.useState<VisibilityState>({})
   const table = useReactTable({
     data,
     columns,
     manualPagination: true,
     pageCount,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       pagination: { pageIndex, pageSize },
+      sorting,
+      columnFilters,
+      columnVisibility,
     },
     onPaginationChange: (updater) => {
       const newState = typeof updater === 'function' ? updater({ pageIndex, pageSize }) : updater;
@@ -74,6 +88,44 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="h-full">
+       <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter nama..."
+          value={(table.getColumn("nama")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("nama")?.setFilterValue(event.target.value)
+          }
+          className="max-w-xs"
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Filter Kolom
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter(
+                (column) => column.getCanHide()
+              )
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -112,7 +164,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  Tidak ada data.
                 </TableCell>
               </TableRow>
             )}
@@ -126,10 +178,10 @@ export function DataTable<TData, TValue>({
           onClick={() => onPageChange(pageIndex - 1)}
           disabled={pageIndex === 0}
         >
-          Previous
+          Sebelumnya
         </Button>
         <span className="text-sm">
-          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
         </span>
         <Button
           variant="outline"
@@ -137,7 +189,7 @@ export function DataTable<TData, TValue>({
           onClick={() => onPageChange(pageIndex + 1)}
           disabled={pageIndex + 1 >= pageCount}
         >
-          Next
+          Selanjutnya
         </Button>
       </div>
     </div>
